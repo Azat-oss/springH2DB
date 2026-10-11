@@ -1,0 +1,45 @@
+<#import "../layout.ftl" as layout>
+<#import "/spring.ftl" as spring>
+
+<@layout.page title=book.bookName>
+    <div class="page-header">
+        <h2>${book.bookName?html} <small class="text-muted">(${book.releaseYear?c})</small></h2>
+    </div>
+
+    <div class="card" style="margin-bottom: 20px;">
+        <div class="card-body">
+            <p><strong>Автор:</strong> ${book.authorName?html}</p>
+            <p><strong>Жанр:</strong> ${book.genre?html}</p>
+            <p><strong>Страниц:</strong> ${book.pageCount?c}</p>
+            <#if book.description??>
+                <p><strong>Описание:</strong> ${book.description?html}</p>
+            </#if>
+        </div>
+    </div>
+
+    <h3>Отзывы</h3>
+    <#if currentUser??>
+        <a class="btn" href="/reviews/new?bookId=${book.id?c}" style="margin-bottom: 15px;">Написать отзыв</a>
+    <#else>
+        <p><small><a href="/auth/login">Войдите</a>, чтобы оставить отзыв</small></p>
+    </#if>
+
+    <#list reviews as review>
+        <div class="card" style="margin-bottom: 10px;">
+            <div class="card-body">
+                <strong>${review.user.username?html}</strong>
+— Оценка: <span style="color: gold;">${review.rating?switch(5, "★★★★★", 4, "★★★★☆", 3, "★★★☆☆", 2, "★★☆☆☆", 1, "★☆☆☆☆", "☆☆☆☆☆")}</span>                <br/>
+                <#if review.comment??>
+                    <p>${review.comment?html}</p>
+                </#if>
+                <#if currentUser?? && currentUser == review.user.username>
+                    <form method="post" action="/reviews/${review.id?c}/delete?bookId=${book.id?c}" onsubmit="return confirm('Удалить отзыв?');">
+                        <button class="btn btn-outline" type="submit" style="margin-top:5px;">Удалить</button>
+                    </form>
+                </#if>
+            </div>
+        </div>
+    <#else>
+        <p>Отзывов пока нет.</p>
+    </#list>
+</@layout.page>
