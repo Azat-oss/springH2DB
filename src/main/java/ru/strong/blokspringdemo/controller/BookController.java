@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.strong.blokspringdemo.model.Book;
 import ru.strong.blokspringdemo.repository.BookRepository;
 import org.springframework.validation.BindingResult;
-
+import ru.strong.blokspringdemo.repository.ReviewRepository;
 
 
 @Controller
@@ -20,11 +20,12 @@ import org.springframework.validation.BindingResult;
 
 public class BookController {
     private final BookRepository bookRepository;
+    private final ReviewRepository reviewRepository;
 
-    public BookController(BookRepository bookRepository) {
+    public BookController(BookRepository bookRepository, ReviewRepository reviewRepository) {
         this.bookRepository = bookRepository;
+        this.reviewRepository = reviewRepository;
     }
-
 
     @GetMapping
     public String list(Model model) {
@@ -32,25 +33,25 @@ public class BookController {
         return "books/list";
     }
 
+    @GetMapping("/{id}")
+    public String viewBook(@PathVariable Integer id, Model model) {
+        Book book = bookRepository.findById(id).orElseThrow();
+        model.addAttribute("book", book);
+        model.addAttribute("reviews", reviewRepository.findByBookIdOrderByCreatedAtDesc(id));
+        return "books/view";
+    }
 
     @GetMapping("/new")
     public String createForm(Model model) {
         model.addAttribute("book", new Book());
-        model.addAttribute("mode", "create");
         return "books/form";
     }
 
-
     @PostMapping
-    public String create(@Valid Book book, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("mode", "create");
-            return "books/form";
-        }
+    public String create(Book book) {
         bookRepository.save(book);
         return "redirect:/books";
     }
-
 
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Integer id) {

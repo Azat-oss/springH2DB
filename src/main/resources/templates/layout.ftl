@@ -16,7 +16,14 @@
             </h1>
             <nav class="site-nav">
                 <a href="/books">Книги</a>
-                <a href="/books/new">Добавить книгу</a>
+                <a href="/reviews/all">Все отзывы</a>
+                <#if currentUser??>
+                    <span style="color: white; margin-right: 10px;">Привет, ${currentUser?html}!</span>
+                    <a href="/auth/logout">Выйти</a>
+                <#else>
+                    <a href="/auth/login">Войти</a>
+                    <a href="/auth/register">Регистрация</a>
+                </#if>
             </nav>
         </div>
     </header>

@@ -9,6 +9,7 @@ spring:
     hibernate:
       ddl-auto: none
   freemarker:
+
     suffix: .ftl
     settings:
       locale: 'ru_RU'

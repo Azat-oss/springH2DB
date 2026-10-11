@@ -24,7 +24,7 @@
         <tbody>
             <#list books as book>
             <tr>
-                <td>${book.bookName?html}</td>
+                <td><a href="/books/${book.id?c}">${book.bookName?html}</a></td>
                 <td>${book.authorName?html}</td>
                 <td>${book.releaseYear?c}</td>
                 <td>${book.genre?html}</td>
